@@ -8,6 +8,12 @@ import { Preloader } from "@/components/Preloader";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://thestralis.com"),
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico" },
+    ],
+  },
   title: {
     default: "The Stralis — Engineering, accelerated by AI",
     template: "%s — The Stralis",
