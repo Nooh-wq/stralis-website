@@ -8,6 +8,40 @@ const BOOK_A_CALL  = "https://cal.com/noohthestralis/30min";
 const SITE_URL     = "https://thestralis.com";
 const LOGO_URL     = `${SITE_URL}/brand/logo-white.png`;
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const MAX = { name: 100, email: 254, company: 150, message: 5000 };
+
+/* ─── HTML escaping — every visitor-supplied field is untrusted ──── */
+function escapeHtml(input: string): string {
+  return input
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+/* Strips newlines/control chars — keeps free-text fields out of email headers. */
+function sanitizeHeaderField(input: string): string {
+  return input.replace(/[\r\n]+/g, " ").trim();
+}
+
+/* ─── Rate limiting — in-memory per-IP sliding window ──────────────
+   Stopgap for a single-region serverless deployment. Swap for
+   Upstash Redis + @upstash/ratelimit if traffic grows or the app
+   spans multiple regions/instances. */
+const submissions = new Map<string, number[]>();
+const RATE_LIMIT = 3;
+const RATE_WINDOW_MS = 60_000;
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const recent = (submissions.get(ip) ?? []).filter((t) => now - t < RATE_WINDOW_MS);
+  recent.push(now);
+  submissions.set(ip, recent);
+  return recent.length > RATE_LIMIT;
+}
+
 /* ─── Shared email shell ─────────────────────────────────────────── */
 function shell(content: string) {
   return `<!DOCTYPE html>
@@ -60,7 +94,7 @@ function shell(content: string) {
 
 /* ─── Confirmation email → visitor ──────────────────────────────── */
 function confirmationHtml(name: string) {
-  const firstName = name.split(" ")[0];
+  const firstName = escapeHtml(name.split(" ")[0]);
   return shell(`
     <!-- Eyebrow -->
     <tr>
@@ -116,7 +150,13 @@ function notificationHtml(opts: {
   projectType?: string;
   message: string;
 }) {
-  const { name, email, company, projectType, message } = opts;
+  // Escape every visitor-supplied field before it touches the HTML string.
+  const name = escapeHtml(opts.name);
+  const email = escapeHtml(opts.email);
+  const company = opts.company ? escapeHtml(opts.company) : undefined;
+  const projectType = opts.projectType ? escapeHtml(opts.projectType) : undefined;
+  const message = escapeHtml(opts.message);
+  const firstName = escapeHtml(opts.name.split(" ")[0]);
 
   const row = (label: string, value: string) => `
     <tr>
@@ -182,7 +222,7 @@ function notificationHtml(opts: {
       <td>
         <a href="mailto:${email}?subject=Re: Your enquiry — The Stralis"
            style="display:inline-block;background:#FF6A00;color:#000000;font-size:14px;font-weight:600;text-decoration:none;padding:13px 26px;border-radius:999px;letter-spacing:-0.01em;">
-          Reply to ${name.split(" ")[0]} &rarr;
+          Reply to ${firstName} &rarr;
         </a>
       </td>
     </tr>
@@ -191,20 +231,45 @@ function notificationHtml(opts: {
 
 /* ─── Route handler ──────────────────────────────────────────────── */
 export async function POST(req: NextRequest) {
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  if (isRateLimited(ip)) {
+    return NextResponse.json({ error: "Too many requests. Please try again shortly." }, { status: 429 });
+  }
+
   const resend = new Resend(process.env.RESEND_API_KEY);
   try {
-    const { name, email, company, message, projectType } =
-      await req.json() as {
-        name?: string;
-        email?: string;
-        company?: string;
-        message?: string;
-        projectType?: string;
-      };
+    const body = await req.json() as {
+      name?: string;
+      email?: string;
+      company?: string;
+      message?: string;
+      projectType?: string;
+      honeypot?: string;
+    };
 
-    if (!name?.trim() || !email?.trim() || !message?.trim()) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    // Honeypot — real visitors never fill this hidden field. Bots that do
+    // get a fake success response so they don't learn to avoid it.
+    if (body.honeypot) {
+      return NextResponse.json({ ok: true });
     }
+
+    const name = body.name?.trim();
+    const email = body.email?.trim();
+    const company = body.company?.trim();
+    const message = body.message?.trim();
+    const projectType = body.projectType?.trim();
+
+    if (
+      !name || name.length > MAX.name ||
+      !email || !EMAIL_RE.test(email) || email.length > MAX.email ||
+      (company && company.length > MAX.company) ||
+      !message || message.length > MAX.message
+    ) {
+      return NextResponse.json({ error: "Invalid input" }, { status: 400 });
+    }
+
+    const safeName = sanitizeHeaderField(name);
+    const safeProjectType = projectType ? sanitizeHeaderField(projectType) : undefined;
 
     await Promise.all([
       // Branded notification to the team
@@ -212,7 +277,7 @@ export async function POST(req: NextRequest) {
         from: FROM_CONTACT,
         to: TEAM_EMAIL,
         replyTo: email,
-        subject: `New enquiry — ${projectType ?? "General"} — ${name}`,
+        subject: `New enquiry — ${safeProjectType ?? "General"} — ${safeName}`,
         html: notificationHtml({ name, email, company, projectType, message }),
       }),
       // Branded confirmation to the visitor

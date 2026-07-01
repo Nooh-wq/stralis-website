@@ -42,6 +42,9 @@ export function ContactForm() {
     company: "",
     message: "",
   });
+  // Honeypot — hidden from real visitors via off-screen positioning (not
+  // display:none, which bots specifically check for). Left blank = human.
+  const [honeypot, setHoneypot] = useState("");
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<Status>("idle");
 
@@ -76,6 +79,7 @@ export function ContactForm() {
           company: values.company,
           message: values.message,
           projectType,
+          honeypot,
         }),
       });
       if (!res.ok) throw new Error("api error");
@@ -178,6 +182,22 @@ export function ContactForm() {
           </motion.div>
         ) : (
           <motion.div key="step2" {...stepTransition}>
+            {/* Honeypot — off-screen, never seen or filled by real visitors */}
+            <div
+              aria-hidden="true"
+              style={{ position: "absolute", left: "-9999px", top: 0 }}
+            >
+              <label htmlFor={`${uid}-hp`}>Leave this field empty</label>
+              <input
+                id={`${uid}-hp`}
+                type="text"
+                tabIndex={-1}
+                autoComplete="off"
+                value={honeypot}
+                onChange={(e) => setHoneypot(e.target.value)}
+              />
+            </div>
+
             <div className="flex flex-col gap-7">
               <Field
                 id={`${uid}-name`}
