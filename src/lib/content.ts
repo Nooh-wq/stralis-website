@@ -34,7 +34,7 @@ export const OFFICES = [
 
 export const SOCIAL_LINKS = [
   { label: "LinkedIn", href: "https://www.linkedin.com/company/thestralis" },
-  { label: "Instagram", href: "https://www.instagram.com/thestralis" },
+  { label: "Instagram", href: "https://www.instagram.com/the.stralis/" },
 ] as const;
 
 export const LEGAL_LINKS = [
