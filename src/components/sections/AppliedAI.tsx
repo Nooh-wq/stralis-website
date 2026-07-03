@@ -2,6 +2,7 @@ import { Container, Section } from "@/components/ui/layout";
 import { GridBackground } from "@/components/ui/GridBackground";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Reveal } from "@/components/ui/Reveal";
+import { MaskReveal } from "@/components/ui/MaskReveal";
 import { AI_PILLARS } from "@/lib/content";
 
 /*
@@ -20,12 +21,12 @@ export function AppliedAI() {
 
         <div className="flex flex-col gap-5">
           <Eyebrow tone="orange">Applied AI, not hype</Eyebrow>
-          <Reveal>
-            <h2 className="t-display-2 max-w-[20ch] text-balance text-white">
+          <h2 className="t-display-2 max-w-[20ch] text-balance text-white">
+            <MaskReveal>
               AI where it <span className="text-orange">earns</span> a place in
               your product.
-            </h2>
-          </Reveal>
+            </MaskReveal>
+          </h2>
         </div>
 
         <div className="mt-20 grid grid-cols-1 gap-x-12 gap-y-14 md:mt-28 md:grid-cols-3">

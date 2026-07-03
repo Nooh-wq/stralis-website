@@ -60,8 +60,8 @@ export function Header() {
                     >
                       {link.label}
                     </Link>
-                    <div className="pointer-events-none absolute left-0 top-full z-50 w-72 pt-4 opacity-0 transition-opacity duration-150 [transition-timing-function:var(--ease-out-brand)] group-hover:pointer-events-auto group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:opacity-100">
-                      <div className="flex flex-col border border-graphite-line bg-black p-2">
+                    <div className="pointer-events-none absolute left-0 top-full z-50 w-72 pt-4 group-hover:pointer-events-auto group-focus-within:pointer-events-auto">
+                      <div className="flex origin-top-left scale-95 flex-col border border-graphite-line bg-black p-2 opacity-0 transition-[transform,opacity] duration-150 [transition-timing-function:var(--ease-out-brand)] group-hover:scale-100 group-hover:opacity-100 group-focus-within:scale-100 group-focus-within:opacity-100">
                         {link.children.map((child) => (
                           <Link
                             key={child.href}
