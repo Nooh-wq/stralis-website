@@ -49,6 +49,10 @@ export function Reviews() {
   return (
     <Section id="reviews">
       <Container>
+        {/* Thin orange rule — signals a clean break from Stats above.
+            Thinner (1px) than the single 2px rule reserved for Applied AI. */}
+        <div className="mb-16 h-px w-full bg-orange md:mb-20" aria-hidden />
+
         <div className="mb-16 flex items-end justify-between gap-6 md:mb-20">
           <Reveal className="flex flex-col gap-5">
             <Eyebrow>Client reviews</Eyebrow>

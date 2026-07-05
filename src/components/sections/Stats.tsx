@@ -7,10 +7,22 @@ import { STATS } from "@/lib/content";
 /*
  * Proof in Performance — three animated count-up stats. Oversized numerals with
  * a short orange accent rule and a mono label, in a hairline-separated grid.
+ * A faint orange radial glow sits low behind the numbers — gives them a
+ * focal point (measurement rings, echoing what the section is about) without
+ * becoming a graphic of its own.
  */
 export function Stats() {
   return (
-    <Section id="stats">
+    <Section id="stats" className="relative overflow-hidden">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10"
+        style={{
+          background:
+            "radial-gradient(ellipse at 50% 120%, rgba(255,106,0,0.08) 0%, transparent 60%)",
+        }}
+      />
+
       <Container>
         <SectionHeading
           eyebrow="Proof in performance"

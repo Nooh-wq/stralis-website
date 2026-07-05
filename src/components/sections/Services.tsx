@@ -3,6 +3,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 import { TextLink } from "@/components/ui/TextLink";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { ContourLines } from "@/components/ui/ContourLines";
 import { SERVICES } from "@/lib/content";
 
 /*
@@ -12,7 +13,9 @@ import { SERVICES } from "@/lib/content";
  */
 export function Services() {
   return (
-    <Section id="services">
+    <Section id="services" className="relative overflow-hidden">
+      <ContourLines className="absolute -right-10 top-1/2 hidden h-[640px] w-[320px] -translate-y-1/2 opacity-[0.06] lg:block" />
+
       <Container>
         <SectionHeading
           eyebrow="Solutions"
@@ -25,7 +28,7 @@ export function Services() {
             <Reveal
               key={service.title}
               delay={(i % 3) * 0.06}
-              className="group flex h-full flex-col gap-5 bg-black p-8 transition-colors duration-200 [transition-timing-function:var(--ease-out-brand)] hover:bg-white/[0.03] lg:p-10"
+              className="group flex h-full flex-col gap-5 border-b border-transparent bg-black p-8 transition-colors duration-200 [transition-timing-function:var(--ease-out-brand)] hover:border-orange hover:bg-orange/[0.03] lg:p-10"
             >
               <div className="flex items-center justify-between">
                 <span className="t-mono text-gray-mid">

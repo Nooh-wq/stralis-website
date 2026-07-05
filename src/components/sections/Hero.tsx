@@ -1,10 +1,11 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { motion, useReducedMotion } from "framer-motion";
+import Image from "next/image";
+import { useRef } from "react";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { Container } from "@/components/ui/layout";
 import { Button } from "@/components/ui/Button";
-import { GridBackground } from "@/components/ui/GridBackground";
 import { EASE_OUT } from "@/lib/motion";
 import { BOOK_A_CALL_URL } from "@/lib/content";
 import { HeroLight } from "./HeroLight";
@@ -13,14 +14,28 @@ import { HeroLight } from "./HeroLight";
 const SideRays = dynamic(() => import("@/components/SideRays"), { ssr: false });
 
 /*
- * Hero. Tall, full-bleed section with light rays cascading from the top-right
- * corner (brand orange + white). Two columns: copy on the left, the brand symbol
- * on the right with a cursor-reactive light (see HeroLight). Headline renders as
- * two beats — "Engineering, accelerated by AI." (white) and "Judgment, not
+ * Hero. Tall, full-bleed section with a dark mountain background image (subtle
+ * scroll parallax), light rays cascading from the top-right corner (brand
+ * orange + white), and two columns: copy on the left, the brand symbol on the
+ * right with a cursor-reactive light (see HeroLight). Headline renders as two
+ * beats — "Engineering, accelerated by AI." (white) and "Judgment, not
  * automated." with a single orange emphasis on "Judgment".
  */
 export function Hero() {
   const reduce = useReducedMotion();
+  const sectionRef = useRef<HTMLElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+  // Subtle parallax only — background drifts ~7% of its own height, capped
+  // per brand restraint (never a dramatic scroll-scrub effect).
+  const parallaxY = useTransform(
+    scrollYProgress,
+    [0, 1],
+    reduce ? ["0%", "0%"] : ["-3%", "4%"],
+  );
 
   const rise = (delay: number) => ({
     initial: reduce ? { opacity: 0 } : { opacity: 0, y: 24 },
@@ -29,9 +44,36 @@ export function Hero() {
   });
 
   return (
-    <section className="relative flex min-h-[88vh] items-center overflow-hidden pt-24 pb-20 md:min-h-[90vh] md:pt-28 md:pb-28">
-      {/* Faint grid backdrop */}
-      <GridBackground className="-z-[6]" />
+    <section
+      ref={sectionRef}
+      className="relative flex min-h-[88vh] items-center overflow-hidden pt-24 pb-20 md:min-h-[90vh] md:pt-28 md:pb-28"
+    >
+      {/* Background image — overscanned so the parallax drift never reveals an edge */}
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 -z-[8]"
+        style={{ top: "-6%", height: "112%", y: parallaxY }}
+      >
+        <Image
+          src="/hero/mountain-bg.png"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
+      </motion.div>
+
+      {/* Darkens the image and fades to solid black at the bottom — seamless
+          transition into the next section. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-[7]"
+        style={{
+          background:
+            "linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 100%)",
+        }}
+      />
 
       {/* Light rays from the top-right corner — behind all content */}
       <div className="pointer-events-none absolute inset-0 -z-[5]">

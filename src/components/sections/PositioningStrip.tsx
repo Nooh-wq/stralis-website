@@ -9,7 +9,20 @@ import { Reveal } from "@/components/ui/Reveal";
  */
 export function PositioningStrip() {
   return (
-    <Section className="border-t border-graphite-line py-20 md:py-28 lg:py-32">
+    <Section className="relative overflow-hidden border-t border-graphite-line bg-[#0A0A0A] py-20 md:py-28 lg:py-32">
+      {/* Faint measurement-grid texture — distinct from the pure-black hero
+          without a hard visual break; echoes the terrain-overlay quality
+          used elsewhere without being a literal image. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px)",
+          backgroundSize: "48px 48px",
+        }}
+      />
+
       <Container>
         <div className="grid items-end gap-8 md:grid-cols-12">
           <h2 className="t-display-2 text-white md:col-span-5">
