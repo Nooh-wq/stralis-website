@@ -24,7 +24,7 @@ export const CONTACT_EMAIL = "hello@thestralis.com";
 export const BOOK_A_CALL_URL = "https://cal.com/noohthestralis/30min";
 
 /* TODO: replace with the real number before launch. */
-export const PHONE = { display: "+1 (747) 363-0613", href: "tel:+17473630613" };
+export const PHONE = { display: "(602) 600-6618", href: "tel:+16026006618" };
 
 /* TODO: replace with the real office addresses before launch. */
 export const OFFICES = [
