@@ -5,6 +5,9 @@ import { LinkedIn, Instagram } from "@/components/ui/icons";
 import {
   CONTACT_EMAIL,
   LEGAL_LINKS,
+  LEGAL_ENTITY_NAME,
+  LEGAL_ENTITY_ADDRESS,
+  PHONE,
   SOCIAL_LINKS,
 } from "@/lib/content";
 import { SOLUTION_LINKS } from "@/lib/solutions";
@@ -28,12 +31,23 @@ export function Footer() {
               An IT engineering studio. We design and ship software, SaaS, MVPs,
               and AI/ML systems.
             </p>
-            <a
-              href={`mailto:${CONTACT_EMAIL}`}
-              className="t-mono w-fit text-gray-light transition-colors hover:text-orange"
-            >
-              {CONTACT_EMAIL}
-            </a>
+            <div className="flex flex-col gap-0.5">
+              <p className="text-[0.8125rem] font-medium text-gray-light">{LEGAL_ENTITY_NAME}</p>
+              <p className="text-[0.8125rem] text-gray-dark">{LEGAL_ENTITY_ADDRESS}</p>
+              <p className="text-[0.8125rem] text-gray-dark">
+                <a
+                  href={`mailto:${CONTACT_EMAIL}`}
+                  className="transition-colors hover:text-orange"
+                >
+                  {CONTACT_EMAIL}
+                </a>
+              </p>
+              <p className="text-[0.8125rem] text-gray-dark">
+                <a href={PHONE.href} className="transition-colors hover:text-orange">
+                  {PHONE.display}
+                </a>
+              </p>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-10 sm:flex sm:flex-row sm:gap-16">
@@ -84,15 +98,8 @@ export function Footer() {
           </div>
         </div>
 
-        {/* AI disclosure — small, mono, muted */}
-        <p className="t-mono measure mt-14 text-gray-dark">
-          Stralis treats AI as a service we deliver, built and reviewed by our
-          own engineers. We are direct about where it is used in your project and
-          where it isn&apos;t.
-        </p>
-
-        <div className="mt-10 flex flex-col gap-4 border-t border-graphite-line pt-8 text-gray-mid sm:flex-row sm:items-center sm:justify-between">
-          <p className="t-body-sm">© The Stralis 2026. All rights reserved.</p>
+        <div className="mt-14 flex flex-col gap-4 border-t border-graphite-line pt-8 text-gray-mid sm:flex-row sm:items-center sm:justify-between">
+          <p className="t-body-sm">© 2026 {LEGAL_ENTITY_NAME}. All rights reserved.</p>
           <div className="flex gap-6">
             {LEGAL_LINKS.map((link) => (
               <Link

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Container, Section } from "@/components/ui/layout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { LEGAL_ENTITY_NAME, LEGAL_ENTITY_ADDRESS, PHONE } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
@@ -41,10 +42,16 @@ export default function PrivacyPage() {
           <div className="flex flex-col gap-10">
             <PolicySection title="Who we are">
               <p>
-                The Stralis (&ldquo;Stralis,&rdquo; &ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;) provides software development,
+                {LEGAL_ENTITY_NAME}{" "}
+                (&ldquo;Stralis,&rdquo; &ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;) provides software development,
                 SaaS, MVP, and AI/ML engineering services. This policy explains what information we
                 collect through thestralis.com (the &ldquo;Site&rdquo;), how we use it, and the rights you
                 have over it.
+              </p>
+              <p>
+                {LEGAL_ENTITY_NAME}
+                <br />
+                {LEGAL_ENTITY_ADDRESS}
               </p>
               <p>Contact: hello@thestralis.com</p>
             </PolicySection>
@@ -208,6 +215,15 @@ export default function PrivacyPage() {
                   hello@thestralis.com
                 </a>
                 .
+              </p>
+              <p>
+                Phone:{" "}
+                <a
+                  href={PHONE.href}
+                  className="text-gray-light transition-colors hover:text-orange"
+                >
+                  {PHONE.display}
+                </a>
               </p>
             </PolicySection>
           </div>

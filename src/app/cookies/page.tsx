@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Container, Section } from "@/components/ui/layout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { LEGAL_ENTITY_NAME, LEGAL_ENTITY_ADDRESS, PHONE } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Cookie Policy",
@@ -40,6 +41,11 @@ export default function CookiesPage() {
           {/* Sections */}
           <div className="flex flex-col gap-10">
             <PolicySection title="What cookies are">
+              <p>
+                This Cookie Policy is published by {LEGAL_ENTITY_NAME}{" "}
+                (&ldquo;Stralis,&rdquo; &ldquo;we,&rdquo; &ldquo;us,&rdquo; or
+                &ldquo;our&rdquo;) for thestralis.com (the &ldquo;Site&rdquo;).
+              </p>
               <p>
                 Cookies are small text files placed on your device when you visit a website. They
                 help websites function properly and help site owners understand how visitors use
@@ -113,6 +119,20 @@ export default function CookiesPage() {
                   hello@thestralis.com
                 </a>
                 .
+              </p>
+              <p>
+                Phone:{" "}
+                <a
+                  href={PHONE.href}
+                  className="text-gray-light transition-colors hover:text-orange"
+                >
+                  {PHONE.display}
+                </a>
+              </p>
+              <p>
+                {LEGAL_ENTITY_NAME}
+                <br />
+                {LEGAL_ENTITY_ADDRESS}
               </p>
             </PolicySection>
           </div>

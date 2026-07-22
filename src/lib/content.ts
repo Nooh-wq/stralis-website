@@ -23,8 +23,14 @@ export const CONTACT_EMAIL = "hello@thestralis.com";
 /* External scheduling link used by every "Book a call" CTA. */
 export const BOOK_A_CALL_URL = "https://cal.com/noohthestralis/30min";
 
-/* TODO: replace with the real number before launch. */
 export const PHONE = { display: "(602) 600-6618", href: "tel:+16026006618" };
+
+/* Registered US legal entity — used in legal-disclosure spots only (footer
+ * copyright, Privacy/Cookie policy identification + contact sections). Brand
+ * name "The Stralis" everywhere else stays unchanged. */
+export const LEGAL_ENTITY_NAME = "The Stralis LLC";
+export const LEGAL_ENTITY_ADDRESS =
+  "3101 N. Central Ave, Ste 183 #7425, Phoenix, Arizona 85012, US";
 
 /* TODO: replace with the real office addresses before launch. */
 export const OFFICES = [
